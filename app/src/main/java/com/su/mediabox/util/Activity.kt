@@ -29,12 +29,12 @@ fun <T : Action> putAction(action: T) {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Action> getActionIns(actionClass: Class<T>): T? =
+fun <T : Action> consumeActionIns(actionClass: Class<T>): T? =
     (actionPoolMap[actionClass.simpleName] as? T)?.also {
         actionPoolMap.remove(actionClass.simpleName)
     }
 
-inline fun <reified T : Action> getAction(): T? = getActionIns(T::class.java)
+inline fun <reified T : Action> consumeAction(): T? = consumeActionIns(T::class.java)
 
 fun <VB : ViewBinding> Activity.viewBind(inflater: (LayoutInflater) -> VB) =
     lazy(LazyThreadSafetyMode.NONE) {

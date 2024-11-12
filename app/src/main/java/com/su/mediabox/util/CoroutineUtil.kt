@@ -52,10 +52,10 @@ private class ViewCoroutineInterceptor(
     private class ViewStateListener(private val view: View, private val job: Job) :
         View.OnAttachStateChangeListener, CompletionHandler {
 
-        override fun onViewAttachedToWindow(v: View?) {}
+        override fun onViewAttachedToWindow(v: View) {}
 
         //在Recyclerview上使用LinearLayoutManager可能并不会调用，取决于mRecycleChildrenOnDetach，因此必须手动调用setRecycleChildrenOnDetach(true)
-        override fun onViewDetachedFromWindow(v: View?) {
+        override fun onViewDetachedFromWindow(v: View) {
             logD("View协程", "分离视图->取消")
             view.removeOnAttachStateChangeListener(this)
             job.cancel()

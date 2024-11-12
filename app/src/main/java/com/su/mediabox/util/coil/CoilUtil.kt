@@ -53,6 +53,7 @@ object CoilUtil {
             logE("loadImage", "图片来源有误！")
             return@runCatching
         }
+        logD("加载图片","url=$urlOrBase64")
         val time = System.currentTimeMillis()
         when {
             urlOrBase64.startsWith("data:image") -> {
@@ -90,10 +91,10 @@ object CoilUtil {
                         ?.let {
                             addHeader("Referer", it)
                         }
-                    addHeader("Host", URL(urlOrBase64).host)
-                    addHeader("Accept", "*/*")
-                    addHeader("Accept-Encoding", "gzip, deflate")
-                    addHeader("Connection", "keep-alive")
+//                    addHeader("Host", URL(urlOrBase64).host)
+//                    addHeader("Accept", "*/*")
+//                    addHeader("Accept-Encoding", "gzip, deflate")
+//                    addHeader("Connection", "keep-alive")
                     addHeader("User-Agent", Constant.Request.getRandomUserAgent())
                     listener { _, _ ->
                         logD("图片加载完毕", "time=$time url=$urlOrBase64", false)

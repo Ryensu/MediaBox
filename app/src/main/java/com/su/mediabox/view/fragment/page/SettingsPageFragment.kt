@@ -87,7 +87,6 @@ class SettingsPageFragment : PreferenceFragmentCompat(), Preference.OnPreference
             }
 
             preferenceCategory {
-
                 titleRes(R.string.net_category_title)
                 switchPreference {
                     key = Const.Setting.NET_REPO_PROXY
@@ -171,7 +170,7 @@ class SettingsPageFragment : PreferenceFragmentCompat(), Preference.OnPreference
                 }
 
                 lifecycleCollect(mediaUpdateCheckWorkerIsRunning) { isRunning ->
-                    listView.post {
+                    App.mainHandler.post {
                         auto.isEnabled = !isRunning
                         interval.isEnabled = !isRunning
                         onMeteredNet.isEnabled = !isRunning
@@ -191,7 +190,7 @@ class SettingsPageFragment : PreferenceFragmentCompat(), Preference.OnPreference
                     summaryRes(R.string.player_bottom_progress_summary)
 
                     lifecycleCollect(Pref.isShowPlayerBottomProgressBar) {
-                        listView.post {
+                        App.mainHandler.post {
                             isChecked = it
                         }
                     }
@@ -234,12 +233,16 @@ class SettingsPageFragment : PreferenceFragmentCompat(), Preference.OnPreference
                     AppUpdateHelper.instance.apply {
                         getUpdateStatus()
                             .observe(this@SettingsPageFragment) {
-                                isEnabled = it != AppUpdateStatus.CHECKING
-                                when (it) {
-                                    AppUpdateStatus.VALID ->
-                                        context.getString(R.string.app_no_update_hint).showToast()
-                                    AppUpdateStatus.DATED -> noticeUpdate(requireActivity() as AppCompatActivity)
-                                    else -> Unit
+                                App.mainHandler.post {
+                                    isEnabled = it != AppUpdateStatus.CHECKING
+                                    when (it) {
+                                        AppUpdateStatus.VALID ->
+                                            context.getString(R.string.app_no_update_hint)
+                                                .showToast()
+
+                                        AppUpdateStatus.DATED -> noticeUpdate(requireActivity() as AppCompatActivity)
+                                        else -> Unit
+                                    }
                                 }
                             }
                     }

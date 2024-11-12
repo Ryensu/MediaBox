@@ -32,7 +32,7 @@ class MediaDetailActivity : BasePluginActivity() {
 
         logD("获取VM", "@${viewModel}")
 
-        getAction<DetailAction>()?.also {
+        consumeAction<DetailAction>()?.also {
             viewModel.partUrl = it.url
         }
 
@@ -111,7 +111,7 @@ class MediaDetailActivity : BasePluginActivity() {
     override fun startActivity(intent: Intent?, options: Bundle?) {
         //主动向下一级路由目标提供一些信息
         intent?.apply {
-            getAction<PlayAction>()?.apply {
+            consumeAction<PlayAction>()?.apply {
                 coverUrl = viewModel.cover
                 detailPartUrl = viewModel.partUrl
                 videoName = viewModel.title

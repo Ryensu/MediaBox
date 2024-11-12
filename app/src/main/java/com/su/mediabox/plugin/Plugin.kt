@@ -40,6 +40,8 @@ import java.io.File
 
 object PluginManager {
 
+    private const val TAG = "PluginManager"
+
     val appApiVersion by unsafeLazy {
         val appInfo: ApplicationInfo = App.context.packageManager
             .getApplicationInfo(
@@ -284,7 +286,7 @@ object PluginManager {
      * @param pluginInfo 至少要保证包含有效[PluginInfo.sourcePath]（作为下载地址）
      * @param directInstall 直接下载安装，一般只用于官方仓库插件，不经安装器验证直接安装
      */
-    fun downloadPlugin(pluginInfo: PluginInfo, directInstall: Boolean = false) {
+    fun downloadPlugin(pluginInfo: PluginInfo, directInstall: Boolean = false) = runCatching {
         val downloadManager =
             App.context.getSystemService(AppCompatActivity.DOWNLOAD_SERVICE) as DownloadManager
         val uri: Uri = Uri
@@ -302,6 +304,10 @@ object PluginManager {
             setAllowedOverRoaming(true)
         }
         downloadManager.enqueue(request)
+    }.onFailure {
+        logE(TAG, "downloadPlugin: error=${it.message} directInstall=$directInstall pluginInfo=$pluginInfo")
+        "插件下载失败: ${it.message}".showToast()
+        it.printStackTrace()
     }
 
     fun initPluginEnv() {

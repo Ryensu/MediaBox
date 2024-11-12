@@ -29,7 +29,7 @@ object DnsServer {
         override fun equals(other: Any?): Boolean {
             return when (other) {
                 null -> false
-                other === this -> true
+                (other === this) -> true
                 is String -> other == dnsServer
                 is Dns -> other.dnsServer == this.dnsServer && other.dnsName == this.dnsName
                 else -> false

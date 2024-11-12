@@ -3,6 +3,8 @@ package com.su.mediabox
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.webkit.WebView
 import com.liulishuo.filedownloader.FileDownloader
@@ -83,6 +85,7 @@ class App : Application() {
     companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
+        val mainHandler = Handler(Looper.getMainLooper())
 
         init {
             // 防止内存泄漏

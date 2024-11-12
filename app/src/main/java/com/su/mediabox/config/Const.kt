@@ -31,7 +31,7 @@ interface Const {
                 "https://ryensx.github.io/MediaBoxPluginRepository/"
             const val GITHUB_PLUGIN_REPO_DEV_DOC_URL = "https://github.com/RyensX/MediaBox/wiki"
             const val USER_NOTICE_VERSION = 2
-            const val GROUP_URL = "https://discord.com/invite/K5GN7FaQuX"
+            const val GROUP_URL = "https://pd.qq.com/s/1cii5y637"
             const val ANNOUNCEMENT="https://raw.githubusercontent.com/RyensX/MediaBox/dev/doc/announcement.json"
 
             val licenses = listOf(

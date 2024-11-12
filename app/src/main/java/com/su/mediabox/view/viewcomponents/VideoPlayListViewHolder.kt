@@ -156,7 +156,7 @@ class VideoPlayListViewHolder private constructor(private val binding: ItemHoriz
                         val playList =
                             bindingTypeAdapter.getTag<List<EpisodeData>>(Const.ViewComponent.EPISODE_LIST_TAG)
                         if (playList != null) {
-                            VideoMediaPlayActivity.playList = playList
+                            action.extraData = playList
                         }
                     }
                     action?.go(bindingContext)

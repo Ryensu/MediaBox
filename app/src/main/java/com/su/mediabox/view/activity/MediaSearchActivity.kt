@@ -133,7 +133,7 @@ class MediaSearchActivity : BasePluginActivity() {
             }
         }
 
-        getAction<SearchAction>()?.also {
+        consumeAction<SearchAction>()?.also {
             viewModel.getSearchData(it.keyWork)
         }
     }

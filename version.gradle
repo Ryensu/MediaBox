@@ -1,9 +1,9 @@
-ext.version_code = 62
-ext.version_name = "2.62"
+ext.version_code = 63
+ext.version_name = "2.63"
 
 def build_versions = [:]
-build_versions.compile_sdk = 31
-build_versions.build_tools = "31.0.0"
+build_versions.compile_sdk = 34
+build_versions.build_tools = "34.0.0"
 build_versions.min_sdk = 21
 build_versions.target_sdk = 31
 ext.build_versions = build_versions
@@ -11,8 +11,8 @@ ext.build_versions = build_versions
 def deps = [:]
 
 def kotlin = [:]
-kotlin.kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
-kotlin.core_ktx = "androidx.core:core-ktx:1.6.0"
+kotlin.kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.8.0"
+kotlin.core_ktx = "androidx.core:core-ktx:1.8.0"
 deps.kotlin = kotlin
 
 def settings = [:]
@@ -60,9 +60,10 @@ okhttp3.okhttp_dnsoverhttps = "com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.0"
 deps.okhttp3 = okhttp3
 
 def room = [:]
-room.room_runtime = "androidx.room:room-runtime:2.4.2"
-room.room_ktx = "androidx.room:room-ktx:2.4.2"
-room.room_compiler = "androidx.room:room-compiler:2.4.2"
+def room_version = "2.5.1"
+room.room_runtime = "androidx.room:room-runtime:$room_version"
+room.room_ktx = "androidx.room:room-ktx:$room_version"
+room.room_compiler = "androidx.room:room-compiler:$room_version"
 deps.room = room
 
 def jsoup = [:]
@@ -103,7 +104,7 @@ nanohttpd.nanohttpd = "org.nanohttpd:nanohttpd:2.3.1"
 deps.nanohttpd = nanohttpd
 
 def coil_kt = [:]
-coil_kt.coil = "io.coil-kt:coil:2.0.0"
+coil_kt.coil = "io.coil-kt:coil:2.5.0"
 deps.coil_kt = coil_kt
 
 def smart = [:]

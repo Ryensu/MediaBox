@@ -31,10 +31,10 @@ class PointView(context: Context, attributeSet: AttributeSet) : View(context, at
         }
         get() = paint.color
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val radius = pointSize / 2
-        canvas?.drawCircle(width / 2F, height / 2F, radius, paint)
+        canvas.drawCircle(width / 2F, height / 2F, radius, paint)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

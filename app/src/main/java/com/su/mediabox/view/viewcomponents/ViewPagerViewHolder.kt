@@ -166,20 +166,21 @@ class ViewPagerViewHolder private constructor(private val binding: ViewComponent
 
     class PageViewModel : ViewModel() {
 
-        private var pageLoader by Delegates.notNull<ViewPagerData.PageLoader>()
-        private var page by Delegates.notNull<Int>()
+        private var pageLoader: ViewPagerData.PageLoader? = null
+        private var page: Int = 0
 
         fun bindData(pageLoader: ViewPagerData.PageLoader?, page: Int?) {
-            pageLoader?.also { this.pageLoader = it }
+            this.pageLoader = pageLoader
             page?.also { this.page = it }
         }
 
-        private val _pageDataLiveData: MutableLiveData<List<BaseData>> = MutableLiveData()
+        private val _pageDataLiveData: MutableLiveData<List<BaseData>?> =
+            MutableLiveData<List<BaseData>?>()
         val pageDataLiveData = _pageDataLiveData.toLiveData()
 
         fun getData() {
             viewModelScope.launch(Dispatchers.PluginIO) {
-                _pageDataLiveData.postValue(pageLoader.loadData(page))
+                _pageDataLiveData.postValue(pageLoader?.loadData(page))
             }
         }
 

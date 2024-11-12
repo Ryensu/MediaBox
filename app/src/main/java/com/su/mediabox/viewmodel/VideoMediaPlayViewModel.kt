@@ -1,7 +1,11 @@
 package com.su.mediabox.viewmodel
 
+import android.content.Context
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import androidx.lifecycle.viewModelScope
 import com.kuaishou.akdanmaku.data.DanmakuItemData
 import com.su.mediabox.Pref
@@ -9,15 +13,28 @@ import com.su.mediabox.database.DatabaseOperations.insertHistoryData
 import com.su.mediabox.database.DatabaseOperations.updateFavoriteData
 import com.su.mediabox.pluginapi.data.VideoPlayMedia
 import com.su.mediabox.pluginapi.components.IVideoPlayPageDataComponent
+import com.su.mediabox.pluginapi.data.EpisodeData
 import com.su.mediabox.util.*
 import com.su.mediabox.view.activity.VideoMediaPlayActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.math.min
 import kotlin.properties.Delegates
 
 class VideoMediaPlayViewModel : ViewModel() {
+
+    companion object {
+        fun getCurrentPlayList(context: Context): List<EpisodeData>? {
+            return if (context !is ComponentActivity)
+                null
+            else {
+                ViewModelProvider(context).get<VideoMediaPlayViewModel>().playList
+            }
+        }
+    }
 
     private val playComponent by lazyAcquireComponent<IVideoPlayPageDataComponent>()
 
@@ -26,6 +43,9 @@ class VideoMediaPlayViewModel : ViewModel() {
     lateinit var videoName: String
 
     var currentPlayEpisodeUrl = ""
+        private set
+
+    var playList: List<EpisodeData>? = null
         private set
 
     private val _currentVideoPlayMedia = MutableLiveData<DataState<VideoPlayMedia>>()
@@ -41,6 +61,12 @@ class VideoMediaPlayViewModel : ViewModel() {
         }
 
     private val episode2VideoInfoMap = mutableMapOf<String, VideoPlayMedia>()
+
+    private var lastAutoJob: Job? = null
+
+    fun init(playList: List<EpisodeData>) {
+        this.playList = playList
+    }
 
     fun playVideoMedia(episodeUrl: String = currentPlayEpisodeUrl) {
         if (episodeUrl.isNotBlank()) {
@@ -82,16 +108,17 @@ class VideoMediaPlayViewModel : ViewModel() {
     private fun preloadVideo(curEpisodeUrl: String) {
         if (!Pref.videoPreload.value)
             return
-        VideoMediaPlayActivity.playList?.let {
+        playList?.let {
             logD("preloadVideo", "load start: cur=$curEpisodeUrl")
-            viewModelScope.launch(Dispatchers.IO) {
+            lastAutoJob?.cancel()
+            lastAutoJob = viewModelScope.launch(Dispatchers.IO) {
                 //定位当前
                 val startPre = it.indexOfFirst { it.url == curEpisodeUrl }
                 if (startPre != -1) {
                     var endIndex = startPre + VideoMediaPlayActivity.DEFAULT_VIDEO_PRELOAD_SIZE
-                    if (endIndex > (it.size - 1)) {
-                        endIndex = it.size - 1
-                    }
+                    endIndex = min(endIndex, it.size - 1)
+                    logD("preloadVideo", "start $startPre to $endIndex")
+                    var realSize = 0
                     for (i in (startPre + 1)..endIndex) {
                         val episodeUrl = it[i].url
                         //TODO 因为内置的WebUtil内部WebView问题，暂时先串行解析
@@ -105,10 +132,12 @@ class VideoMediaPlayViewModel : ViewModel() {
                                         "load episodeUrl=$episodeUrl success result=$result"
                                     )
                                     episode2VideoInfoMap[episodeUrl] = result
+                                    realSize++
                                 }
                             }
                         }
                     }
+                    logD("preloadVideo", "preload success: size=$realSize")
                 }
             }
         }
@@ -124,6 +153,7 @@ class VideoMediaPlayViewModel : ViewModel() {
                 )
                 true
             }
+
             else -> false
         }
     }
@@ -142,7 +172,13 @@ class VideoMediaPlayViewModel : ViewModel() {
                     }
                 }
             }
+
             else -> logD("加载弹幕失败", "当前无播放媒体")
         }
+    }
+
+    override fun onCleared() {
+        playList = null
+        super.onCleared()
     }
 }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
+import android.util.Log
 import android.view.Gravity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,6 +23,8 @@ import kotlinx.coroutines.launch
 import com.su.mediabox.util.ResourceUtil.getString
 
 class PluginInstallerViewModel : ViewModel() {
+
+    private val tag = "PluginInstaller"
 
     private val _pluginInstallState =
         MutableLiveData<PluginInstallState>(PluginInstallState.LOADING)
@@ -62,6 +65,9 @@ class PluginInstallerViewModel : ViewModel() {
                                 )
                         )
                     }
+                }
+                else -> {
+                    logE(tag, "install error: $data")
                 }
             }
         }
@@ -229,6 +235,9 @@ class PluginInstallerViewModel : ViewModel() {
         when (val data = pluginInstallState.value) {
             is PluginInstallState.PREVIEW -> {
                 PluginManager.downloadPlugin(data.pluginInfo)
+            }
+            else -> {
+                logE(tag, "downloadPlugin: $data")
             }
         }
     }

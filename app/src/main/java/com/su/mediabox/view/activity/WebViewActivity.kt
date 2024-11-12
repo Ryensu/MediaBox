@@ -12,7 +12,7 @@ import com.su.mediabox.databinding.ActivityWebViewBinding
 import com.su.mediabox.plugin.WebUtilImpl.clearWeb
 import com.su.mediabox.pluginapi.action.WebBrowserAction
 import com.su.mediabox.util.Util.openUrl
-import com.su.mediabox.util.getAction
+import com.su.mediabox.util.consumeAction
 import com.su.mediabox.util.logD
 import com.su.mediabox.util.logE
 import com.su.mediabox.util.viewBind
@@ -27,7 +27,7 @@ class WebViewActivity : BasePluginActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mAction = getAction() ?: run {
+        mAction = consumeAction() ?: run {
             finish()
             return
         }

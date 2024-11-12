@@ -40,8 +40,6 @@ class GettingWebView @JvmOverloads constructor(
         }
         mWebSettings.javaScriptCanOpenWindowsAutomatically = true
         mWebSettings.loadsImagesAutomatically = false
-        mWebSettings.setAppCacheEnabled(true)
-        mWebSettings.setAppCachePath(context.cacheDir.absolutePath)
         mWebSettings.databaseEnabled = true
         mWebSettings.setGeolocationDatabasePath(context.getDir("database", 0).path)
         mWebSettings.setGeolocationEnabled(true)
